@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale/vi";
+import { Audio } from "expo-av";
 import * as Calendar from "expo-calendar";
 import * as Notifications from "expo-notifications";
 import * as Speech from "expo-speech";
@@ -23,6 +24,7 @@ import {
 } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Transtext from "../Components/Transtext";
 
 interface Message {
     id: string;
@@ -67,7 +69,6 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
     geminiApiKey = "AIzaSyCHIId7Q80cEF4PFDaJt6JwIG5EQuKUqvU", // Default API key, should be passed from outside
 }) => {
     const [text, setText] = useState<string>("");
-    const [isListening, setIsListening] = useState<boolean>(false);
     const [messages, setMessages] = useState<Message[]>([
         {
             id: "1",
@@ -82,12 +83,10 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
     const [showHistory, setShowHistory] = useState<boolean>(false);
 
     // Initialize Gemini API client
-    const [genAI, setGenAI] = useState<any>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, setGenAI] = useState<any>(null);
     const [chatSession, setChatSession] = useState<any>(null);
 
-    console.log(genAI);
-
-    // Set up Gemini API on component mount
     useEffect(() => {
         const setupGeminiAPI = async () => {
             try {
@@ -140,8 +139,16 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
         endName: "Vị trí kết thúc",
     });
 
-    const speak = (text: string) => {
+    useEffect(() => {
+        const _fetch = async () => {
+            await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+        };
+        _fetch();
+    }, [text]);
+
+    const speak = async (text: string) => {
         Speech.stop();
+
         Speech.speak(text, {
             language: "vi-VN",
             volume: 0.6,
@@ -172,21 +179,10 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
         setText("");
     };
 
-    const handleMicPress = (): void => {
-        const newListeningState = !isListening;
-        setIsListening(newListeningState);
-        onListeningStatusChange(newListeningState);
-
-        if (newListeningState) {
-            console.log("Bắt đầu nghe...");
-        } else {
-            console.log("Dừng nghe");
-        }
-    };
-
     const handleSend = (): void => {
         if (text.trim()) {
             speak("");
+
             // Add user message
             const userMessage: Message = {
                 id: generateId(),
@@ -1260,18 +1256,7 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
                                         />
                                     </TouchableOpacity>
                                 )}
-                                <TouchableOpacity
-                                    style={styles.micButton}
-                                    onPress={handleMicPress}
-                                >
-                                    <Icon
-                                        name={isListening ? "mic-off" : "mic"}
-                                        size={24}
-                                        color={
-                                            isListening ? "#D32F2F" : "#4285F4"
-                                        }
-                                    />
-                                </TouchableOpacity>
+                                <Transtext setText={setText} text={text} />
                                 <TouchableOpacity
                                     style={[
                                         styles.sendButton,

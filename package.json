@@ -20,7 +20,9 @@
     "axios": "^1.9.0",
     "date-fns": "^4.1.0",
     "expo": "~53.0.6",
+    "expo-av": "^15.1.4",
     "expo-blur": "~14.1.4",
+    "expo-calendar": "~14.1.4",
     "expo-constants": "~17.1.5",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
@@ -45,8 +47,7 @@
     "react-native-screens": "~4.10.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "expo-calendar": "~14.1.4"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
