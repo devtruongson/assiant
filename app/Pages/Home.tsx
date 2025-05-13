@@ -16,6 +16,7 @@ import {
     Platform,
     SafeAreaView,
     ScrollView,
+    StatusBar, // Thêm import StatusBar
     StyleSheet,
     Text,
     TextInput,
@@ -1162,8 +1163,8 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
             <SafeAreaView style={styles.safeArea}>
                 <KeyboardAvoidingView
                     style={styles.container}
-                    behavior={Platform.OS === "ios" ? "padding" : undefined}
-                    keyboardVerticalOffset={20}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"} // Sử dụng "height" cho Android
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}  // Điều chỉnh offset cho Android
                 >
                     <View style={styles.chatContainer}>
                         {/* Map History Button */}
@@ -1285,6 +1286,7 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: "#F5F5F5",
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, // Xử lý thanh trạng thái Android
     },
     container: {
         // backgroundColor: "#333",
