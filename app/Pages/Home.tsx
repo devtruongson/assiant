@@ -743,19 +743,21 @@ const GoogleAssistantChat: React.FC<GoogleAssistantChatProps> = ({
     // Open Google Maps outside the app
     const openGoogleMaps = (startAddress: string, endAddress: string) => {
         const url = Platform.select({
-            ios: `comgooglemaps://?saddr=${encodeURIComponent(
+            ios: `comgooglemaps://?saddr=${encodeURIComponent( // saddr: start address
                 startAddress
-            )}&daddr=${encodeURIComponent(endAddress)}&directionsmode=driving`,
+            )}&daddr=${encodeURIComponent( // daddr: destination address
+                endAddress
+            )}&directionsmode=walking`, // Thêm directionsmode=walking
             android: `google.navigation:q=${encodeURIComponent(
                 endAddress
-            )}&saddr=${encodeURIComponent(startAddress)}`,
+            )}&saddr=${encodeURIComponent(startAddress)}&mode=w`, // Thêm mode=w (walking)
         });
 
         Linking.openURL(url!).catch((err) => {
             console.error("Cannot open Google Maps", err);
             const fallbackUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
                 startAddress
-            )}&destination=${encodeURIComponent(endAddress)}`;
+            )}&destination=${encodeURIComponent(endAddress)}&travelmode=walking`; // Thêm travelmode=walking
             Linking.openURL(fallbackUrl);
         });
     };
